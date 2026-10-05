@@ -1,6 +1,10 @@
 # trading-execution-lab
 
+[简体中文](README.zh-CN.md)
+
 A hands-on Java trading execution system lab for learning stateful, low-latency trading architecture with GigaSpaces, FIX, risk controls, failure recovery, and production-oriented design.
+
+**Build target:** Java 25 (Maven Compiler Plugin 3.15.0).
 
 > Goal: build enough practical trading-system depth to discuss and implement order lifecycle, execution state, partitioning, high availability, failure recovery, and FIX connectivity in a realistic Java system.
 
@@ -63,24 +67,15 @@ A hands-on Java trading execution system lab for learning stateful, low-latency 
 ### Phase 8 — Mini Execution Service
 Build the end-to-end execution flow:
 
-```text
-Client
-  |
-  v
-Execution Gateway
-  |
-  v
-GigaSpaces
-  |
-  +--> Order Processor
-  +--> Risk Engine
-  +--> Position State
-  |
-  v
-Exchange Simulator
-  |
-  v
-Execution Report
+```mermaid
+flowchart LR
+    Client[Client] -->|New / Cancel| Gateway[Execution Gateway]
+    Gateway --> Grid[(GigaSpaces Grid)]
+    Grid --> Order[Order Processor]
+    Order --> Risk[Risk Engine]
+    Risk -->|Accepted| Exchange[Exchange Simulator]
+    Exchange -->|Execution Report| Grid
+    Grid --> Position[Position State]
 ```
 
 - Deliverable: working mini execution service
