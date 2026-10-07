@@ -4,7 +4,7 @@
 
 这是一个用 Java 逐步搭建的交易执行系统学习项目，围绕订单生命周期、低延迟状态管理、风险检查、事件处理、高可用与故障恢复展开。项目计划结合 GigaSpaces、FIX 和 PostgreSQL，练习交易系统与分布式系统中的关键设计问题。
 
-> **当前阶段：项目骨架。** 仓库现有 Maven 多模块配置和学习文档，尚无 Java 源码，也未实现订单处理、风控、交易所模拟或持久化功能。下方架构图描述的是学习目标，不代表当前可运行能力。
+> **当前阶段：订单领域模型与本地 Space 入门。** 已实现订单状态流转和持仓模型，并加入 GigaSpaces 18.0.0 的订单读写演示。下方完整架构仍是学习目标。阶段 2 的运行方式和代码阅读顺序见[Space 入门实验](docs/space-lesson.zh-CN.md)。
 
 ## 项目希望解决的问题
 
@@ -68,9 +68,9 @@ stateDiagram-v2
 
 | 模块 | 计划职责 | 当前情况 |
 | --- | --- | --- |
-| `order-domain` | 订单、成交、持仓和领域状态流转 | 仅有 Maven 配置 |
+| `order-domain` | 订单、成交、持仓和领域状态流转 | 已实现基础模型与状态规则 |
 | `execution-gateway` | 接收外部订单命令，后续承载 REST / FIX 适配 | 仅有 Maven 配置 |
-| `gigaspaces-grid` | Space 配置、路由、分区与事件处理集成 | GigaSpaces 依赖尚未选择 |
+| `gigaspaces-grid` | Space 配置、路由、分区与事件处理集成 | 已加入本地 Space 与订单读写演示；分区实验待实现 |
 | `risk-engine` | 下单前风控检查及风险状态 | 仅有 Maven 配置 |
 | `exchange-simulator` | 模拟确认、拒绝、部分成交和全部成交 | 仅有 Maven 配置 |
 | `persistence` | PostgreSQL 持久化与重启恢复 | 仅有 Maven 配置 |
@@ -99,7 +99,7 @@ stateDiagram-v2
 
 ## 开始使用
 
-项目使用 Maven 多模块结构，根目录的 `pom.xml` 将编译目标设为 Java 25，并固定 Maven Compiler Plugin 版本。请使用 JDK 25 运行 Maven。当前尚无可运行的应用入口；可以先查看路线图和模块配置。随着实现推进，再补充环境准备、启动方式和验证步骤。
+项目使用 Maven 多模块结构，编译目标为 Java 25。请使用 JDK 25 运行 Maven，按[阶段 2 操作说明](docs/space-lesson.zh-CN.md)启动 `SpaceLesson`，观察订单写入、查询、更新和取走。
 
 ## 工程原则
 
@@ -114,7 +114,7 @@ stateDiagram-v2
 - [x] 仓库初始化
 - [x] Maven 多模块骨架
 - [x] 学习路线与目标架构文档
-- [ ] 订单领域模型与状态机
+- [x] 订单领域模型与状态机
 - [ ] GigaSpaces 本地环境与路由实验
 - [ ] 事件处理、并发与幂等
 - [ ] 主备、故障恢复与持久化

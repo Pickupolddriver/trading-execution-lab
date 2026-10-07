@@ -11,17 +11,74 @@
 
   <artifactId>gigaspaces-grid</artifactId>
 
+  <properties>
+    <gigaspaces.version>18.0.0</gigaspaces.version>
+    <lombok.version>1.18.48</lombok.version>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>central</id>
+      <url>https://repo.maven.apache.org/maven2</url>
+    </repository>
+    <repository>
+      <id>org.openspaces</id>
+      <url>https://maven-repository.openspaces.org</url>
+    </repository>
+  </repositories>
+
   <dependencies>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- GigaSpaces dependency will be added during the Space lesson after version/setup is chosen. -->
+    <dependency>
+      <groupId>org.gigaspaces</groupId>
+      <artifactId>xap-openspaces</artifactId>
+      <version>${gigaspaces.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>dev.tradingexecutionlab</groupId>
       <artifactId>order-domain</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>${lombok.version}</version>
+            </path>
+          </annotationProcessorPaths>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.5.0</version>
+        <configuration>
+          <executable>java</executable>
+          <arguments>
+            <argument>-classpath</argument>
+            <classpath/>
+            <argument>dev.tradingexecutionlab.grid.SpaceLesson</argument>
+          </arguments>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

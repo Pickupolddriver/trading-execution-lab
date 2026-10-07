@@ -6,6 +6,8 @@ A hands-on Java trading execution system lab for learning stateful, low-latency 
 
 **Build target:** Java 25 (Maven Compiler Plugin 3.15.0).
 
+The order domain model is implemented. The next hands-on lesson adds an embedded GigaSpaces 18.0.0 Space with order write, read, change, and take operations. See the [Grid module](gigaspaces-grid/README.md) and [Chinese walkthrough](docs/space-lesson.zh-CN.md). Partitioning and the full service architecture remain future work.
+
 > Goal: build enough practical trading-system depth to discuss and implement order lifecycle, execution state, partitioning, high availability, failure recovery, and FIX connectivity in a realistic Java system.
 
 ## Learning Roadmap
@@ -128,8 +130,8 @@ This project intentionally focuses on trading-system concerns instead of CRUD ap
 - [x] Repository initialized
 - [x] Learning roadmap defined
 - [x] Maven multi-module skeleton created
-- [ ] Phase 1: order domain model
-- [ ] Phase 1: order state machine
+- [x] Phase 1: order domain model
+- [x] Phase 1: order state machine
 - [ ] Phase 1: GigaSpaces local setup
 - [ ] Phase 2: partitioning / routing
 - [ ] Phase 3: event processing

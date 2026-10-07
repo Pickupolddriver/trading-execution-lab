@@ -27,3 +27,4 @@ out/
 # Local environment
 .env
 .env.*
+gs-license.txt
