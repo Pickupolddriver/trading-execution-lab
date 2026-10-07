@@ -19,6 +19,8 @@ This is a teaching example, not a matching engine. It has no order book, shared 
 
 The new `OrderBook` is a small in-memory central limit order book for one symbol. It keeps price levels and FIFO order, returns two-sided `Trade` facts, and leaves domain-order updates to the caller. It has no persistence, concurrency control, DAY expiry, amend flow, or shared state across processes.
 
+For the step-by-step matching walkthrough, see [OrderBook: what happens when an order arrives](../docs/order-book-walkthrough.zh-CN.md).
+
 See [the implementation guide](../docs/implementation-guide.zh-CN.md) for examples and limits.
 
 `OrderCommandProcessor` synchronously accepts or rejects new-order and cancel commands, applies both sides of each trade to their domain orders, and returns immutable events. It is single-threaded and in-memory. Read the [Stage 4 event-flow walkthrough](../docs/stage4-order-events.zh-CN.md) before extending it toward GigaSpaces event containers or FIX.

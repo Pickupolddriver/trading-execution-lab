@@ -4,6 +4,8 @@
 
 ## 当前进度与下一步
 
+**当前位置：Stage 1–4 核心教学实现已完成；Stage 5 尚未开始，是下一阶段。** 最近完成的 OrderBook 学习材料包含撮合流程、TreeMap / LinkedHashMap 取舍和时间复杂度，见[OrderBook 撮合流程讲解](order-book-walkthrough.zh-CN.md)。
+
 - 阶段 1：已实现基础领域模型，并补充 `clientOrderId`、`OrderType`、`limitPrice`、`TimeInForce.DAY`；通过编译与 UT。
 - 阶段 2：本地 Space、订单快照、读写演示和测试已实现并通过验证。见[Space 实验](space-lesson.zh-CN.md)。
 - 阶段 3：已实现 `orderId`、`clientId`、`symbol` 的合成分区分布 / 数据亲和性实验；真实多分区集群与延迟压测仍未做。见[阶段 3 路由说明](stage3-routing.zh-CN.md)。

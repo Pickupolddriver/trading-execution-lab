@@ -4,7 +4,7 @@
 
 这是一个用 Java 逐步搭建的交易执行系统学习项目，围绕订单生命周期、低延迟状态管理、风险检查、事件处理、高可用与故障恢复展开。项目计划结合 GigaSpaces、FIX 和 PostgreSQL，练习交易系统与分布式系统中的关键设计问题。
 
-> **当前进度：Stage 1–4 的核心教学实现已完成。** 包括订单状态流转、本地 Space 读写、合成分区路由分析、单进程内存版 OrderBook，以及同步订单命令 / 事件流程。真实多分区集群、事件容器、并发、高可用与故障恢复仍是后续学习目标。详见[学习路线图](docs/learning-roadmap.zh-CN.md)。
+> **当前进度：Stage 1–4 的核心教学实现已完成；下一阶段是尚未开始的 Stage 5（并发、顺序与幂等）。** 包括订单状态流转、本地 Space 读写、合成分区路由分析、单进程内存版 OrderBook，以及同步订单命令 / 事件流程。真实多分区集群、事件容器、高可用与故障恢复仍是后续学习目标。详见[学习路线图](docs/learning-roadmap.zh-CN.md)。
 
 ## 项目希望解决的问题
 
@@ -93,6 +93,8 @@ stateDiagram-v2
 后续交给 DeepSeek 的分步任务、约束与人工验收场景见[实现指导](docs/implementation-guide.zh-CN.md)。
 
 已实现经典 OrderBook（中央限价订单簿）的单证券内存版，支持价格 / 时间优先撮合和撤单。设计范围、数据结构、匹配流程、状态边界和测试拆分见[OrderBook 设计说明](docs/order-book-design.zh-CN.md)。
+
+若想按一张新单进入后逐步理解对手盘最优价、多个价格档撮合和剩余量处理，可读[OrderBook 撮合流程讲解](docs/order-book-walkthrough.zh-CN.md)。
 
 ## GigaSpaces 官方资料
 

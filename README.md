@@ -6,7 +6,7 @@ A hands-on Java trading execution system lab for learning stateful, low-latency 
 
 **Build target:** Java 25 (Maven Compiler Plugin 3.15.0).
 
-Stages 1–4 have core teaching implementations: the order domain, embedded Space, synthetic routing comparison, in-memory OrderBook, and synchronous order command/event flow. Real multi-partition benchmarks, durable event processing, concurrency, and the full service architecture remain future work. See the [Grid module](gigaspaces-grid/README.md), [Stage 3 walkthrough](docs/stage3-routing.zh-CN.md), and [Stage 4 walkthrough](docs/stage4-order-events.zh-CN.md).
+Stages 1–4 have core teaching implementations: the order domain, embedded Space, synthetic routing comparison, in-memory OrderBook, and synchronous order command/event flow. Stage 5 (concurrency, ordering, and idempotency) is next and has not started. Real multi-partition benchmarks, durable event processing, and the full service architecture remain future work. See the [Grid module](gigaspaces-grid/README.md), [Stage 3 walkthrough](docs/stage3-routing.zh-CN.md), [Stage 4 walkthrough](docs/stage4-order-events.zh-CN.md), and [OrderBook data-structure walkthrough](docs/order-book-walkthrough.zh-CN.md).
 
 > Goal: build enough practical trading-system depth to discuss and implement order lifecycle, execution state, partitioning, high availability, failure recovery, and FIX connectivity in a realistic Java system.
 
