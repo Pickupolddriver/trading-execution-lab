@@ -12,9 +12,8 @@ The order domain model is implemented. The next hands-on lesson adds an embedded
 
 ## Learning Roadmap
 
-### Phase 1 — Space & Order State
+### Phase 1 — Domain & Order State
 - Model `Order`, `Execution`, `Position`, `Account`, `RiskLimit`
-- Learn GigaSpaces Space basics: write / read / take / change
 - Implement the minimal order lifecycle:
   - NEW
   - ACKNOWLEDGED
@@ -24,13 +23,19 @@ The order domain model is implemented. The next hands-on lesson adds an embedded
   - CANCELLED
 - Deliverable: an in-memory order state model
 
-### Phase 2 — Partitioning, Routing & Data Affinity
+### Phase 2 — GigaSpaces Space
+
+- Store an order snapshot in an embedded Space
+- Learn write / read / take / change, identity, and routing
+- Deliverable: the [Space lesson](docs/space-lesson.zh-CN.md), verified locally by the project user
+
+### Phase 3 — Partitioning, Routing & Data Affinity
 - Learn partitions and routing keys
 - Compare routing by `orderId`, `clientId`, and `symbol`
 - Understand colocating orders, positions, and risk state
 - Deliverable: a documented partitioning decision
 
-### Phase 3 — Order Event Processing
+### Phase 4 — Order Event Processing
 - Introduce order commands and execution events
 - Learn polling / notify containers and FIFO concerns
 - Model:
@@ -39,28 +44,28 @@ The order domain model is implemented. The next hands-on lesson adds an embedded
   - ExecutionReport
 - Deliverable: event-driven order processing flow
 
-### Phase 4 — Concurrency & Ordering
+### Phase 5 — Concurrency & Ordering
 - Optimistic locking / versioning
 - Idempotency and duplicate event handling
 - Out-of-order Execution Reports
 - Deterministic state transitions
 - Deliverable: concurrency and ordering test cases
 
-### Phase 5 — Primary / Backup & Failover
+### Phase 6 — Primary / Backup & Failover
 - Primary-backup replication
 - Synchronous replication
 - Failover and promotion
 - In-flight request behaviour
 - Deliverable: kill-primary failure experiment
 
-### Phase 6 — Recovery & Split Brain
+### Phase 7 — Recovery & Persistence
 - Recovery after process / node failure
 - Network partition scenarios
 - Split-brain risks
 - Duplicate execution prevention
 - Deliverable: failure matrix and recovery strategy
 
-### Phase 7 — Persistence & Mirror
+#### Persistence & Mirror
 - Persist in-memory state to PostgreSQL
 - Learn Mirror / async persistence concepts
 - Define source-of-truth and recovery boundaries
@@ -132,13 +137,12 @@ This project intentionally focuses on trading-system concerns instead of CRUD ap
 - [x] Maven multi-module skeleton created
 - [x] Phase 1: order domain model
 - [x] Phase 1: order state machine
-- [ ] Phase 1: GigaSpaces local setup
-- [ ] Phase 2: partitioning / routing
-- [ ] Phase 3: event processing
-- [ ] Phase 4: concurrency / ordering
-- [ ] Phase 5: primary / backup failover
-- [ ] Phase 6: recovery / split brain
-- [ ] Phase 7: persistence
+- [ ] Phase 2: GigaSpaces local runtime verification
+- [ ] Phase 3: partitioning / routing
+- [ ] Phase 4: event processing
+- [ ] Phase 5: concurrency / ordering
+- [ ] Phase 6: primary / backup failover
+- [ ] Phase 7: recovery / persistence
 - [ ] Phase 8: mini execution service
 - [ ] Phase 9: QuickFIX/J
 - [ ] Phase 10: interview walkthrough

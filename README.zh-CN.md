@@ -90,6 +90,8 @@ stateDiagram-v2
 
 完整路线和每阶段的概念、实现与退出条件见[中文学习路线图](docs/learning-roadmap.zh-CN.md)；原始英文版见[Learning Roadmap](docs/learning-roadmap.md)。架构职责和依赖原则见[架构说明](docs/architecture.md)。
 
+后续交给 DeepSeek 的分步任务、约束与人工验收场景见[实现指导](docs/implementation-guide.zh-CN.md)。
+
 ## GigaSpaces 官方资料
 
 - [GigaSpaces 技术文档首页](https://docs.gigaspaces.com/latest/landing.html)：产品、架构、指南和参考实现入口。

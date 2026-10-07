@@ -4,6 +4,8 @@ import dev.tradingexecutionlab.domain.Execution;
 import dev.tradingexecutionlab.domain.Order;
 import dev.tradingexecutionlab.domain.OrderStatus;
 import dev.tradingexecutionlab.domain.Side;
+import dev.tradingexecutionlab.domain.OrderType;
+import dev.tradingexecutionlab.domain.TimeInForce;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -103,7 +105,8 @@ class OrderSpaceRepositoryTest {
     }
 
     private static Order order(String id, String symbol) {
-        return new Order(id, "client-demo", symbol, Side.BUY, new BigDecimal("100"),
+        return new Order(id, "client-demo", "request-" + id, symbol, Side.BUY, new BigDecimal("100"),
+                OrderType.LIMIT, new BigDecimal("10.60"), TimeInForce.DAY,
                 Instant.parse("2026-01-01T00:00:00Z"));
     }
 }

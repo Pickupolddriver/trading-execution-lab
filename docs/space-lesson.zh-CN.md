@@ -2,6 +2,8 @@
 
 这一步使用 Java 25 和 GigaSpaces 18.0.0，在当前 JVM 内启动一个内存 Space。退出程序后数据消失；本阶段的实验使用一个写入者。
 
+演示订单为 BUY LIMIT 100，限价 10.60，有效方式 DAY，客户请求 ID 为 `request-001`。成交 40 @ 10.50 仍是手动构造的示例回报；没有模拟行情或撮合。新增订单条件会一起复制到 `OrderEntry`，DAY 尚无到期处理。后续任务见[实现指导](implementation-guide.zh-CN.md)。
+
 ## 先运行
 
 在项目根目录执行：

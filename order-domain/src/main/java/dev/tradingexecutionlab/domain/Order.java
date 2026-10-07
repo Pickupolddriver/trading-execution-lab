@@ -14,9 +14,13 @@ import java.util.Set;
 public class Order {
     private final String orderId;
     private final String clientId;
+    private final String clientOrderId;
     private final String symbol;
     private final Side side;
     private final BigDecimal quantity;
+    private final OrderType orderType;
+    private final BigDecimal limitPrice;
+    private final TimeInForce timeInForce;
     private final Instant createdAt;
 
     private OrderStatus status = OrderStatus.NEW;
@@ -30,15 +34,30 @@ public class Order {
     public Order(
             String orderId,
             String clientId,
+            String clientOrderId,
             String symbol,
             Side side,
             BigDecimal quantity,
+            OrderType orderType,
+            BigDecimal limitPrice,
+            TimeInForce timeInForce,
             Instant createdAt) {
         this.orderId = requireText(orderId, "orderId");
         this.clientId = requireText(clientId, "clientId");
+        this.clientOrderId = requireText(clientOrderId, "clientOrderId");
         this.symbol = requireText(symbol, "symbol");
         this.side = Objects.requireNonNull(side, "side");
         this.quantity = requirePositive(quantity, "quantity");
+        this.orderType = Objects.requireNonNull(orderType, "orderType");
+        this.timeInForce = Objects.requireNonNull(timeInForce, "timeInForce");
+        if (orderType == OrderType.LIMIT) {
+            this.limitPrice = requirePositive(limitPrice, "limitPrice");
+        } else {
+            if (limitPrice != null) {
+                throw new IllegalArgumentException("Market orders must not specify limitPrice");
+            }
+            this.limitPrice = null;
+        }
         this.createdAt = Objects.requireNonNull(createdAt, "createdAt");
     }
 

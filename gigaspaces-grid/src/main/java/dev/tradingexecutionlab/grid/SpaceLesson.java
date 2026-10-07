@@ -3,6 +3,8 @@ package dev.tradingexecutionlab.grid;
 import dev.tradingexecutionlab.domain.Execution;
 import dev.tradingexecutionlab.domain.Order;
 import dev.tradingexecutionlab.domain.Side;
+import dev.tradingexecutionlab.domain.OrderType;
+import dev.tradingexecutionlab.domain.TimeInForce;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -10,10 +12,25 @@ import java.time.Instant;
 /** Run with Maven exec:exec to follow one order through write, read, change and take. */
 public class SpaceLesson {
     public static void main(String[] args) {
+        int exitCode = 0;
+        try {
+            runLesson();
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            exitCode = 1;
+        }
+
+        // GigaSpaces leaves a non-daemon JDK RMI reaper thread after its embedded Space closes.
+        // This class is a standalone demo entry point, so finish the process after cleanup.
+        System.exit(exitCode);
+    }
+
+    private static void runLesson() {
         try (LocalOrderSpace localSpace = new LocalOrderSpace("orders-lesson")) {
             OrderSpaceRepository repository = new OrderSpaceRepository(localSpace.getGigaSpace());
-            Order order = new Order("order-001", "client-demo", "DEMO", Side.BUY,
-                    new BigDecimal("100"), Instant.parse("2026-01-01T00:00:00Z"));
+            Order order = new Order("order-001", "client-demo", "request-001", "DEMO", Side.BUY,
+                    new BigDecimal("100"), OrderType.LIMIT, new BigDecimal("10.60"),
+                    TimeInForce.DAY, Instant.parse("2026-01-01T00:00:00Z"));
 
             repository.save(order);
             print("write + read", repository.findById(order.getOrderId()).orElseThrow());

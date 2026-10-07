@@ -2,6 +2,10 @@
 
 This repository is intentionally built in stages. The implementation should follow the concepts rather than jumping directly to a complete system.
 
+## Current implementation and handoff
+
+The domain model and embedded Space lesson are written but runtime verification is pending. Orders now include client request ID, MARKET / LIMIT type, validated limit price, and DAY time in force. DAY expiration, matching, concurrency protection, and recovery remain future work. See the [detailed Chinese roadmap](learning-roadmap.zh-CN.md) and [implementation handoff guide](implementation-guide.zh-CN.md) for scoped tasks and acceptance scenarios. Compilation and execution are performed by the project user.
+
 ## Stage 1 — Domain and Order State
 
 ### Concepts
