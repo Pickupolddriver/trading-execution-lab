@@ -6,7 +6,7 @@
 - 不加入个人姓名、账号、邮件或许可密钥；保留 MIT License。
 - `order-domain` 不依赖 GigaSpaces、QuickFIX/J 或数据库。协议转换放在 `execution-gateway`，Space 数据转换放在 `gigaspaces-grid`。
 - 每次只完成一个任务，写明改动文件、业务规则、运行方法、未实现部分。未经要求不提交或推送。
-- 编译和运行由项目使用者执行；不要自动下载依赖或运行 Maven。需要新增测试时先按用户当次要求确定范围。
+- 每次代码修改后都要用 Java 25 执行相关 Maven 编译与 UT；目前项目依赖可用，不要跳过验证。
 
 ## 当前模型边界
 
@@ -17,6 +17,18 @@
 `Order.applyExecution` 汇总实际成交量与均价，并在当前对象内按成交 ID 去重。它目前不实现市场撮合、限价违规回报处理、成交撤销 / 更正、并发保护或恢复。模拟器要遵守限价；真实对手方发来异常成交时，如何记录并告警需要另行设计，不能简单丢弃而造成账实不符。
 
 `OrderEntry` 保存订单条件与当前状态，不保存成交 ID 集合。`write` 可以覆盖旧记录；`change` 更新一组字段不等于整个业务流程已经拥有事务保护。现有演示单写入者假设只适用于阶段 2。
+
+## 已完成：阶段 3 分区路由模型
+
+`gigaspaces-grid` 的 `RoutingExperimentLesson` 对比 `orderId`、`clientId` 和 `symbol` 在合成工作集上的分区分布和共置比例。它采用 GigaSpaces 文档中的 hash 路由计算思路，但没有启动多分区 Space 或测实际延迟。运行命令和解读见[阶段 3 路由说明](stage3-routing.zh-CN.md)。
+
+## 已完成：阶段 4 订单命令 / 事件
+
+`exchange-simulator` 的 `OrderCommandProcessor` 以单线程同步方式处理 `NewOrderCommand` / `CancelOrderCommand`，并返回接受 / 拒绝、买卖双方执行回报、撤单确认 / 拒绝。它只在当前 JVM 保存状态，不具备并发、可靠事件投递或崩溃恢复能力。详细规则与验收案例见[阶段 4 订单事件说明](stage4-order-events.zh-CN.md)。
+
+## 下一项可交给 DeepSeek：阶段 5 并发与幂等
+
+先为 `OrderCommandProcessor` 增加显式版本号和同一订单的串行化策略，再设计可重启保留的命令 / execution 去重记录。先选一个小任务实现；不得把 `ConcurrentHashMap` 或 JVM 内 `Set` 描述为跨重启幂等。需要覆盖两个并发成交更新、重复命令、重复 execution 和处理失败后重试，并说明 book 与事件之间的原子性边界。
 
 ## 已完成：确定性交易所模拟器（阶段 4A 的预备练习）
 

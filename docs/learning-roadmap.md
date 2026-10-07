@@ -4,7 +4,7 @@ This repository is intentionally built in stages. The implementation should foll
 
 ## Current implementation and handoff
 
-The domain model and embedded Space lesson are written but runtime verification is pending. Orders now include client request ID, MARKET / LIMIT type, validated limit price, and DAY time in force. DAY expiration, matching, concurrency protection, and recovery remain future work. See the [detailed Chinese roadmap](learning-roadmap.zh-CN.md) and [implementation handoff guide](implementation-guide.zh-CN.md) for scoped tasks and acceptance scenarios. Compilation and execution are performed by the project user.
+Stages 1–4 have core teaching implementations: order domain, embedded Space, a synthetic routing model, in-memory OrderBook, and synchronous command/event processing. Real cluster performance tests, event containers, concurrency, and recovery remain future work. See the [detailed Chinese roadmap](learning-roadmap.zh-CN.md), [Stage 3 walkthrough](stage3-routing.zh-CN.md), [Stage 4 walkthrough](stage4-order-events.zh-CN.md), and [implementation handoff guide](implementation-guide.zh-CN.md).
 
 ## Stage 1 — Domain and Order State
 

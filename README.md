@@ -6,7 +6,7 @@ A hands-on Java trading execution system lab for learning stateful, low-latency 
 
 **Build target:** Java 25 (Maven Compiler Plugin 3.15.0).
 
-The order domain model is implemented. The next hands-on lesson adds an embedded GigaSpaces 18.0.0 Space with order write, read, change, and take operations. See the [Grid module](gigaspaces-grid/README.md) and [Chinese walkthrough](docs/space-lesson.zh-CN.md). Partitioning and the full service architecture remain future work.
+Stages 1–4 have core teaching implementations: the order domain, embedded Space, synthetic routing comparison, in-memory OrderBook, and synchronous order command/event flow. Real multi-partition benchmarks, durable event processing, concurrency, and the full service architecture remain future work. See the [Grid module](gigaspaces-grid/README.md), [Stage 3 walkthrough](docs/stage3-routing.zh-CN.md), and [Stage 4 walkthrough](docs/stage4-order-events.zh-CN.md).
 
 > Goal: build enough practical trading-system depth to discuss and implement order lifecycle, execution state, partitioning, high availability, failure recovery, and FIX connectivity in a realistic Java system.
 
@@ -33,17 +33,17 @@ The order domain model is implemented. The next hands-on lesson adds an embedded
 - Learn partitions and routing keys
 - Compare routing by `orderId`, `clientId`, and `symbol`
 - Understand colocating orders, positions, and risk state
-- Deliverable: a documented partitioning decision
+- Deliverable: a deterministic synthetic comparison and documented trade-offs (implemented); real clustered latency benchmark remains future work
 
 ### Phase 4 — Order Event Processing
 - Introduce order commands and execution events
-- The exchange module now has a single-symbol in-memory OrderBook lesson with price-time matching
+- The exchange module has a single-symbol in-memory OrderBook and synchronous command/event processor
 - Learn polling / notify containers and FIFO concerns
 - Model:
   - NewOrder
   - CancelOrder
   - ExecutionReport
-- Deliverable: event-driven order processing flow
+- Deliverable: tested in-memory order processing flow (implemented); durable event containers remain future work
 
 ### Phase 5 — Concurrency & Ordering
 - Optimistic locking / versioning
@@ -139,9 +139,9 @@ This project intentionally focuses on trading-system concerns instead of CRUD ap
 - [x] Phase 1: order domain model
 - [x] Phase 1: order state machine
 - [x] Phase 2: GigaSpaces local Space lesson and runtime verification
-- [ ] Phase 3: partitioning / routing
+- [x] Phase 3: synthetic partitioning / routing model (real cluster benchmark pending)
 - [x] Phase 4A: deterministic top-of-book simulator and in-memory OrderBook
-- [ ] Phase 4: event processing integration
+- [x] Phase 4: synchronous order command and event processing
 - [ ] Phase 5: concurrency / ordering
 - [ ] Phase 6: primary / backup failover
 - [ ] Phase 7: recovery / persistence

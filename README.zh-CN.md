@@ -4,7 +4,7 @@
 
 这是一个用 Java 逐步搭建的交易执行系统学习项目，围绕订单生命周期、低延迟状态管理、风险检查、事件处理、高可用与故障恢复展开。项目计划结合 GigaSpaces、FIX 和 PostgreSQL，练习交易系统与分布式系统中的关键设计问题。
 
-> **当前阶段：订单领域、GigaSpaces Space 与单证券 OrderBook 入门。** 已实现订单状态流转、本地 Space 读写实验和单进程内存版价格 / 时间优先撮合。分区、事件驱动服务、高可用与故障恢复仍是后续学习目标。阶段 2 的运行说明见[Space 入门实验](docs/space-lesson.zh-CN.md)。
+> **当前进度：Stage 1–4 的核心教学实现已完成。** 包括订单状态流转、本地 Space 读写、合成分区路由分析、单进程内存版 OrderBook，以及同步订单命令 / 事件流程。真实多分区集群、事件容器、并发、高可用与故障恢复仍是后续学习目标。详见[学习路线图](docs/learning-roadmap.zh-CN.md)。
 
 ## 项目希望解决的问题
 
@@ -70,9 +70,9 @@ stateDiagram-v2
 | --- | --- | --- |
 | `order-domain` | 订单、成交、持仓和领域状态流转 | 已实现基础模型与状态规则 |
 | `execution-gateway` | 接收外部订单命令，后续承载 REST / FIX 适配 | 仅有 Maven 配置 |
-| `gigaspaces-grid` | Space 配置、路由、分区与事件处理集成 | 已加入本地 Space 与订单读写演示；分区实验待实现 |
+| `gigaspaces-grid` | Space 配置、路由、分区与事件处理集成 | 本地 Space 读写与合成路由分布实验已实现；真实集群压测待后续 |
 | `risk-engine` | 下单前风控检查及风险状态 | 仅有 Maven 配置 |
-| `exchange-simulator` | 行情快照模拟、OrderBook 和撮合结果 | 已实现快照模拟与单证券内存版 OrderBook；尚未集成订单管理和事件流 |
+| `exchange-simulator` | 行情快照模拟、OrderBook 和撮合结果 | 已实现快照模拟、单证券内存版 OrderBook 与同步订单命令 / 事件处理 |
 | `persistence` | PostgreSQL 持久化与重启恢复 | 仅有 Maven 配置 |
 | `failure-tests` | 故障切换、重复消息、乱序和恢复场景 | 测试依赖待后续阶段引入 |
 
@@ -120,11 +120,12 @@ stateDiagram-v2
 - [x] 学习路线与目标架构文档
 - [x] 订单领域模型与状态机
 - [x] GigaSpaces 本地 Space 读写实验并完成本地验证
-- [ ] 分区、路由与数据亲和性实验
+- [x] Stage 3：合成分区路由 / 数据亲和性实验（真实多分区性能实验待做）
 - [x] 事件处理预备练习：确定性交易所模拟器
 - [x] 单证券内存 OrderBook：价格优先、同价 FIFO、多档撮合和撤单
-- [ ] 事件流程集成、并发与幂等
+- [x] Stage 4：同步订单命令与事件流程
+- [ ] 并发、顺序与持久幂等
 - [ ] 主备、故障恢复与持久化
 - [ ] 迷你执行服务与 FIX 集成
 
-每个学习步骤计划产出一个概念说明、一段 Java 实现、一个故障场景和一个面试问题，并通过 Git 提交记录演进过程。
+Stage 3 与 Stage 4 的实现、边界、验收方式、自测和面试表达见[Stage 3 路由说明](docs/stage3-routing.zh-CN.md)及[Stage 4 订单事件说明](docs/stage4-order-events.zh-CN.md)。每个学习步骤计划产出概念说明、Java 实现、故障场景和面试问题，并通过 Git 提交记录演进过程。

@@ -16,3 +16,9 @@ This is an in-memory, single-writer lesson. Closing the Space loses its data. Th
 If startup requires a license, obtain a valid GigaSpaces evaluation or production license and set `GS_LICENSE` locally. Do not commit it. A Maven mirror using `mirrorOf=*` must exclude `org.openspaces` to allow the official GigaSpaces repository.
 
 [中文讲解和自检问题](../docs/space-lesson.zh-CN.md)
+
+The routing experiment compares synthetic placement and affinity for `orderId`, `clientId`, and `symbol`. It is a deterministic hash model, not a multi-partition latency benchmark. See the [Stage 3 walkthrough](../docs/stage3-routing.zh-CN.md). Run it after installing reactor dependencies:
+
+```powershell
+mvn -pl gigaspaces-grid exec:exec '-Dlesson.mainClass=dev.tradingexecutionlab.grid.RoutingExperimentLesson'
+```

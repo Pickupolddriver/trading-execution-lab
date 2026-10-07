@@ -14,6 +14,7 @@
   <properties>
     <gigaspaces.version>18.0.0</gigaspaces.version>
     <lombok.version>1.18.48</lombok.version>
+    <lesson.mainClass>dev.tradingexecutionlab.grid.SpaceLesson</lesson.mainClass>
   </properties>
 
   <repositories>
@@ -75,7 +76,7 @@
           <arguments>
             <argument>-classpath</argument>
             <classpath/>
-            <argument>dev.tradingexecutionlab.grid.SpaceLesson</argument>
+            <argument>${lesson.mainClass}</argument>
           </arguments>
         </configuration>
       </plugin>
