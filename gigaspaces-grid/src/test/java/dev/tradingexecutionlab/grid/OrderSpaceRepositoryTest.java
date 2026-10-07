@@ -44,7 +44,7 @@ class OrderSpaceRepositoryTest {
         assertAll(
                 () -> assertEquals(order.getClientId(), stored.getClientId()),
                 () -> assertEquals(order.getSide(), stored.getSide()),
-                () -> assertEquals(order.getQuantity(), stored.getQuantity()),
+                () -> assertEquals(0, order.getQuantity().compareTo(stored.getQuantity())),
                 () -> assertEquals(order.getCreatedAt(), stored.getCreatedAt()),
                 () -> assertEquals(OrderStatus.NEW, stored.getStatus()));
     }
@@ -80,7 +80,7 @@ class OrderSpaceRepositoryTest {
                 () -> assertEquals(OrderStatus.PARTIALLY_FILLED, stored.getStatus()),
                 () -> assertEquals(0, stored.getFilledQuantity().compareTo(new BigDecimal("40"))),
                 () -> assertEquals(0, stored.getAverageFillPrice().compareTo(new BigDecimal("10.50"))),
-                () -> assertEquals(order.getQuantity(), stored.getQuantity()),
+                () -> assertEquals(0, order.getQuantity().compareTo(stored.getQuantity())),
                 () -> assertEquals(order.getSymbol(), stored.getSymbol()));
     }
 
