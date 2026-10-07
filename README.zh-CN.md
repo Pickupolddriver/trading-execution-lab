@@ -4,7 +4,7 @@
 
 这是一个用 Java 逐步搭建的交易执行系统学习项目，围绕订单生命周期、低延迟状态管理、风险检查、事件处理、高可用与故障恢复展开。项目计划结合 GigaSpaces、FIX 和 PostgreSQL，练习交易系统与分布式系统中的关键设计问题。
 
-> **当前阶段：订单领域模型与本地 Space 入门。** 已实现订单状态流转和持仓模型，并加入 GigaSpaces 18.0.0 的订单读写演示。下方完整架构仍是学习目标。阶段 2 的运行方式和代码阅读顺序见[Space 入门实验](docs/space-lesson.zh-CN.md)。
+> **当前阶段：订单领域、GigaSpaces Space 与单证券 OrderBook 入门。** 已实现订单状态流转、本地 Space 读写实验和单进程内存版价格 / 时间优先撮合。分区、事件驱动服务、高可用与故障恢复仍是后续学习目标。阶段 2 的运行说明见[Space 入门实验](docs/space-lesson.zh-CN.md)。
 
 ## 项目希望解决的问题
 
@@ -72,7 +72,7 @@ stateDiagram-v2
 | `execution-gateway` | 接收外部订单命令，后续承载 REST / FIX 适配 | 仅有 Maven 配置 |
 | `gigaspaces-grid` | Space 配置、路由、分区与事件处理集成 | 已加入本地 Space 与订单读写演示；分区实验待实现 |
 | `risk-engine` | 下单前风控检查及风险状态 | 仅有 Maven 配置 |
-| `exchange-simulator` | 模拟确认、拒绝、部分成交和全部成交 | 仅有 Maven 配置 |
+| `exchange-simulator` | 行情快照模拟、OrderBook 和撮合结果 | 已实现快照模拟与单证券内存版 OrderBook；尚未集成订单管理和事件流 |
 | `persistence` | PostgreSQL 持久化与重启恢复 | 仅有 Maven 配置 |
 | `failure-tests` | 故障切换、重复消息、乱序和恢复场景 | 测试依赖待后续阶段引入 |
 
@@ -91,6 +91,8 @@ stateDiagram-v2
 完整路线和每阶段的概念、实现与退出条件见[中文学习路线图](docs/learning-roadmap.zh-CN.md)；原始英文版见[Learning Roadmap](docs/learning-roadmap.md)。架构职责和依赖原则见[架构说明](docs/architecture.md)。
 
 后续交给 DeepSeek 的分步任务、约束与人工验收场景见[实现指导](docs/implementation-guide.zh-CN.md)。
+
+已实现经典 OrderBook（中央限价订单簿）的单证券内存版，支持价格 / 时间优先撮合和撤单。设计范围、数据结构、匹配流程、状态边界和测试拆分见[OrderBook 设计说明](docs/order-book-design.zh-CN.md)。
 
 ## GigaSpaces 官方资料
 
@@ -117,8 +119,11 @@ stateDiagram-v2
 - [x] Maven 多模块骨架
 - [x] 学习路线与目标架构文档
 - [x] 订单领域模型与状态机
-- [ ] GigaSpaces 本地环境与路由实验
-- [ ] 事件处理、并发与幂等
+- [x] GigaSpaces 本地 Space 读写实验并完成本地验证
+- [ ] 分区、路由与数据亲和性实验
+- [x] 事件处理预备练习：确定性交易所模拟器
+- [x] 单证券内存 OrderBook：价格优先、同价 FIFO、多档撮合和撤单
+- [ ] 事件流程集成、并发与幂等
 - [ ] 主备、故障恢复与持久化
 - [ ] 迷你执行服务与 FIX 集成
 

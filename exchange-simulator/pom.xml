@@ -11,6 +11,10 @@
 
   <artifactId>exchange-simulator</artifactId>
 
+  <properties>
+    <lesson.mainClass>dev.tradingexecutionlab.exchange.OrderBookLesson</lesson.mainClass>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -23,4 +27,17 @@
       <version>${project.version}</version>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.5.0</version>
+        <configuration>
+          <mainClass>${lesson.mainClass}</mainClass>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

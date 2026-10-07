@@ -18,13 +18,13 @@
 
 `OrderEntry` 保存订单条件与当前状态，不保存成交 ID 集合。`write` 可以覆盖旧记录；`change` 更新一组字段不等于整个业务流程已经拥有事务保护。现有演示单写入者假设只适用于阶段 2。
 
-## 推荐的下一个实现任务：确定性交易所模拟器（阶段 4A 的预备练习）
+## 已完成：确定性交易所模拟器（阶段 4A 的预备练习）
 
-这可以在分区实验前作为纯 Java 练习，主路线的阶段 3 仍需完成。
+本练习在主路线阶段 3 之前作为纯 Java 练习完成。代码位于 `exchange-simulator`，可运行 `mvn -pl exchange-simulator exec:java` 演示。它基于单次 top-of-book 快照，不维护挂单，也不是经典 OrderBook。
 
 ### 可复制的任务描述
 
-> 阅读当前 Order、Execution、OrderEntry 和学习路线。仅在 exchange-simulator 实现最小交易所模拟器：输入一笔已确认、未终结的订单与一份行情快照，输出零个或一个 Execution。行情至少包含 bid、ask、各自可用数量和时间。买单使用 ask，卖单使用 bid；买入限价必须大于等于 ask，卖出限价必须小于等于 bid。成交量取订单剩余量与该侧可用数量的较小值；无可用量或价格不满足条件则不成交。MARKET 也不能凭空产生流动性。成交 ID 和成交时间由调用者提供，使结果可复现。不要在模拟器内修改 Order 或 Position，由调用者应用返回的成交。明确单次快照调用的边界，不声称拥有撮合簿或连续行情的流动性消耗机制。同步文档与简短演示，保留 Java 25 和 MIT，不下载依赖、不运行 Maven、不提交或推送。
+> 已完成。实现和验收规则见 `exchange-simulator` 源码、README 与 `ExchangeSimulatorTest`。Java 25 编译和 UT 已通过。
 
 ### 人工验收情景
 

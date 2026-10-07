@@ -37,6 +37,7 @@ The order domain model is implemented. The next hands-on lesson adds an embedded
 
 ### Phase 4 — Order Event Processing
 - Introduce order commands and execution events
+- The exchange module now has a single-symbol in-memory OrderBook lesson with price-time matching
 - Learn polling / notify containers and FIFO concerns
 - Model:
   - NewOrder
@@ -137,9 +138,10 @@ This project intentionally focuses on trading-system concerns instead of CRUD ap
 - [x] Maven multi-module skeleton created
 - [x] Phase 1: order domain model
 - [x] Phase 1: order state machine
-- [ ] Phase 2: GigaSpaces local runtime verification
+- [x] Phase 2: GigaSpaces local Space lesson and runtime verification
 - [ ] Phase 3: partitioning / routing
-- [ ] Phase 4: event processing
+- [x] Phase 4A: deterministic top-of-book simulator and in-memory OrderBook
+- [ ] Phase 4: event processing integration
 - [ ] Phase 5: concurrency / ordering
 - [ ] Phase 6: primary / backup failover
 - [ ] Phase 7: recovery / persistence
