@@ -14,7 +14,7 @@
 
 `clientOrderId` 是请求编号，不等于 `clientId`。目前没有持久化唯一性约束；将来应按客户 / 来源及约定的唯一性范围识别重复请求。
 
-`Order.applyExecution` 汇总实际成交量与均价，并在当前对象内按成交 ID 去重。它目前不实现市场撮合、限价违规回报处理、成交撤销 / 更正、并发保护或恢复。模拟器要遵守限价；真实对手方发来异常成交时，如何记录并告警需要另行设计，不能简单丢弃而造成账实不符。
+`Order.applyExecution` 汇总实际成交量与均价，并在当前对象内按成交 ID 去重；Stage 5A 为它增加了对象锁、状态版本及 expected-version 更新。去重和版本只存在当前对象 / JVM 中，重启后不保留。它目前不实现市场撮合、限价违规回报处理、成交撤销 / 更正、跨实例并发保护或恢复。模拟器要遵守限价；真实对手方发来异常成交时，如何记录并告警需要另行设计，不能简单丢弃而造成账实不符。
 
 `OrderEntry` 保存订单条件与当前状态，不保存成交 ID 集合。`write` 可以覆盖旧记录；`change` 更新一组字段不等于整个业务流程已经拥有事务保护。现有演示单写入者假设只适用于阶段 2。
 
@@ -24,11 +24,11 @@
 
 ## 已完成：阶段 4 订单命令 / 事件
 
-`exchange-simulator` 的 `OrderCommandProcessor` 以单线程同步方式处理 `NewOrderCommand` / `CancelOrderCommand`，并返回接受 / 拒绝、买卖双方执行回报、撤单确认 / 拒绝。它只在当前 JVM 保存状态，不具备并发、可靠事件投递或崩溃恢复能力。详细规则与验收案例见[阶段 4 订单事件说明](stage4-order-events.zh-CN.md)。
+`exchange-simulator` 的 `OrderCommandProcessor` 处理 `NewOrderCommand` / `CancelOrderCommand`，并返回接受 / 拒绝、买卖双方执行回报、撤单确认 / 拒绝。Stage 5A 用单个 monitor 串行化一个处理器实例的命令，并以内存缓存重放相同请求的原响应；多实例协调、持久缓存、可靠事件投递和崩溃恢复仍未实现。Stage 4 行为见[订单事件说明](stage4-order-events.zh-CN.md)，Stage 5A 见[并发与幂等说明](stage5-concurrency-idempotency.zh-CN.md)。
 
-## 下一项可交给 DeepSeek：阶段 5 并发与幂等
+## 下一项可交给 DeepSeek：阶段 5B 持久化冲突与提交边界
 
-先为 `OrderCommandProcessor` 增加显式版本号和同一订单的串行化策略，再设计可重启保留的命令 / execution 去重记录。先选一个小任务实现；不得把 `ConcurrentHashMap` 或 JVM 内 `Set` 描述为跨重启幂等。需要覆盖两个并发成交更新、重复命令、重复 execution 和处理失败后重试，并说明 book 与事件之间的原子性边界。
+当前代码建立了单 JVM 的行为基线。下一步先研究如何让两个独立处理器共享版本和去重状态，并确保订单簿变更、成交事实、执行回报及去重记录具有可恢复的提交边界。先比较 GigaSpaces 条件更新、持久 inbox/outbox 或事务日志的最小方案；不要只把 `HashMap` 换成 `ConcurrentHashMap` 就声称具备跨实例幂等。
 
 ## 已完成：确定性交易所模拟器（阶段 4A 的预备练习）
 

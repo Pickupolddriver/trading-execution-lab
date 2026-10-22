@@ -23,4 +23,4 @@ For the step-by-step matching walkthrough, see [OrderBook: what happens when an 
 
 See [the implementation guide](../docs/implementation-guide.zh-CN.md) for examples and limits.
 
-`OrderCommandProcessor` synchronously accepts or rejects new-order and cancel commands, applies both sides of each trade to their domain orders, and returns immutable events. It is single-threaded and in-memory. Read the [Stage 4 event-flow walkthrough](../docs/stage4-order-events.zh-CN.md) before extending it toward GigaSpaces event containers or FIX.
+`OrderCommandProcessor` synchronously accepts or rejects new-order and cancel commands, applies both sides of each trade to their domain orders, and returns immutable events. Stage 5A serializes calls and replays duplicate request results inside one processor instance; it remains in-memory and single-JVM. Read the [Stage 4 event-flow walkthrough](../docs/stage4-order-events.zh-CN.md) and [Stage 5 concurrency/idempotency walkthrough](../docs/stage5-concurrency-idempotency.zh-CN.md).

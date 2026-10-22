@@ -5,9 +5,9 @@ import lombok.Getter;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.Instant;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 /** An order and the rules that move it through its lifecycle. */
 @Getter
@@ -23,13 +23,13 @@ public class Order {
     private final TimeInForce timeInForce;
     private final Instant createdAt;
 
-    private OrderStatus status = OrderStatus.NEW;
-    private BigDecimal filledQuantity = BigDecimal.ZERO;
-    private BigDecimal averageFillPrice = BigDecimal.ZERO;
-    private String rejectionReason;
+    private volatile OrderStatus status = OrderStatus.NEW;
+    private volatile BigDecimal filledQuantity = BigDecimal.ZERO;
+    private volatile BigDecimal averageFillPrice = BigDecimal.ZERO;
+    private volatile String rejectionReason;
+    private volatile long version;
 
-    @Getter(lombok.AccessLevel.NONE)
-    private final Set<String> appliedExecutionIds = new HashSet<>();
+    private final Map<String, Execution> appliedExecutions = new HashMap<>();
 
     public Order(
             String orderId,
@@ -61,25 +61,63 @@ public class Order {
         this.createdAt = Objects.requireNonNull(createdAt, "createdAt");
     }
 
-    public void acknowledge() {
+    public synchronized void acknowledge() {
         requireStatus(OrderStatus.NEW, "Only a new order can be acknowledged");
         status = OrderStatus.ACKNOWLEDGED;
+        version++;
     }
 
-    public void reject(String reason) {
+    public synchronized void reject(String reason) {
         requireStatus(OrderStatus.NEW, "Only a new order can be rejected");
         rejectionReason = requireText(reason, "reason");
         status = OrderStatus.REJECTED;
+        version++;
     }
 
-    public void applyExecution(Execution execution) {
-        Objects.requireNonNull(execution, "execution");
-        if (!orderId.equals(execution.orderId())) {
-            throw new IllegalArgumentException("Execution belongs to a different order");
-        }
-        if (appliedExecutionIds.contains(execution.executionId())) {
+    public synchronized void applyExecution(Execution execution) {
+        validateExecution(execution);
+        Execution previous = appliedExecutions.get(execution.executionId());
+        if (previous != null) {
+            requireSameExecution(previous, execution);
             return;
         }
+        applyNewExecution(execution);
+    }
+
+    /** Applies a fill only if the caller's observed order version is still current. */
+    public synchronized ExecutionApplyResult applyExecution(Execution execution, long expectedVersion) {
+        validateExecution(execution);
+        Execution previous = appliedExecutions.get(execution.executionId());
+        if (previous != null) {
+            requireSameExecution(previous, execution);
+            return ExecutionApplyResult.DUPLICATE;
+        }
+        if (version != expectedVersion) {
+            return ExecutionApplyResult.VERSION_CONFLICT;
+        }
+        applyNewExecution(execution);
+        return ExecutionApplyResult.APPLIED;
+    }
+
+    /** A consistent view of mutable order state for optimistic read/modify/write. */
+    public synchronized OrderSnapshot snapshot() {
+        return new OrderSnapshot(orderId, version, status, quantity, filledQuantity,
+                remainingQuantity(), averageFillPrice, rejectionReason);
+    }
+
+    public synchronized void cancel() {
+        if (status != OrderStatus.ACKNOWLEDGED && status != OrderStatus.PARTIALLY_FILLED) {
+            throw new IllegalStateException("Only an acknowledged, open order can be cancelled");
+        }
+        status = OrderStatus.CANCELLED;
+        version++;
+    }
+
+    public synchronized BigDecimal remainingQuantity() {
+        return quantity.subtract(filledQuantity);
+    }
+
+    private void applyNewExecution(Execution execution) {
         if (status != OrderStatus.ACKNOWLEDGED && status != OrderStatus.PARTIALLY_FILLED) {
             throw new IllegalStateException("Executions can only be applied to acknowledged, open orders");
         }
@@ -97,19 +135,25 @@ public class Order {
         status = filledQuantity.compareTo(quantity) == 0
                 ? OrderStatus.FILLED
                 : OrderStatus.PARTIALLY_FILLED;
-        appliedExecutionIds.add(execution.executionId());
+        appliedExecutions.put(execution.executionId(), execution);
+        version++;
     }
 
-    /** Call after cancellation has been confirmed. */
-    public void cancel() {
-        if (status != OrderStatus.ACKNOWLEDGED && status != OrderStatus.PARTIALLY_FILLED) {
-            throw new IllegalStateException("Only an acknowledged, open order can be cancelled");
+    private void validateExecution(Execution execution) {
+        Objects.requireNonNull(execution, "execution");
+        if (!orderId.equals(execution.orderId())) {
+            throw new IllegalArgumentException("Execution belongs to a different order");
         }
-        status = OrderStatus.CANCELLED;
     }
 
-    public BigDecimal remainingQuantity() {
-        return quantity.subtract(filledQuantity);
+    private static void requireSameExecution(Execution previous, Execution retry) {
+        if (!previous.executionId().equals(retry.executionId())
+                || !previous.orderId().equals(retry.orderId())
+                || previous.quantity().compareTo(retry.quantity()) != 0
+                || previous.price().compareTo(retry.price()) != 0
+                || !previous.executedAt().equals(retry.executedAt())) {
+            throw new IllegalArgumentException("Execution ID was reused with different execution data");
+        }
     }
 
     private void requireStatus(OrderStatus expected, String message) {

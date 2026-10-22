@@ -25,11 +25,10 @@ sequenceDiagram
   participant B as OrderBook
   C->>P: NewOrderCommand
   P->>O: NEW → ACKNOWLEDGED
-  P-->>C: OrderAccepted
   P->>B: submit(order)
   B-->>P: Trade facts / resting or cancelled quantity
   P->>O: applyExecution(buy and sell sides)
-  P-->>C: ExecutionReport per order side
+  P-->>C: ordered event list (Accepted before execution reports)
   opt 市价单有剩余
     P->>O: cancel()
     P-->>C: OrderCancelled(MARKET_REMAINDER)
@@ -52,8 +51,8 @@ sequenceDiagram
 
 ## 当前简化及下一步
 
-- 单线程、单 JVM 内存处理；没有并发锁、持久化、重启恢复、事件重放或跨节点顺序保证。
-- `orderId` 去重只在当前处理器进程存活期间有效；处理器重启后不保留。
+- 单 JVM 内存处理。Stage 5A 后，处理器会串行化同一实例的 `handle(...)` 调用；没有跨实例顺序保证。
+- Stage 5A 在当前处理器实例缓存新单 / 撤单请求的原始响应，但缓存没有持久化、容量限制或重启恢复。
 - 事件对象还不是 FIX `ExecutionReport (35=8)`。FIX 字段映射、`ClOrdID` / `OrigClOrdID`、序号、重发和终态 `LeavesQty` 规则留给 Stage 9。
 - 本阶段不做风控、DAY 到期、改单、成交撤销 / 更正、账户持仓或 outbox。
 - 如果 book 已修改而回报生成失败，目前没有事务回滚；生产系统需设计事务 / 日志、重试和恢复边界。
@@ -79,4 +78,4 @@ sequenceDiagram
 
 ## 面试表达
 
-“我把命令与事实事件分开。新单经过校验后先确认，再由单证券订单簿撮合；一个 trade 是撮合事实，买卖双方分别更新订单并产生执行回报。撤单请求只有从订单簿移除剩余量后才确认。当前代码是单线程内存教学模型，接下来要为并发顺序、幂等和崩溃恢复引入可持久的命令 / 事件边界。”
+"我把命令与事实事件分开。新单经过校验后先确认，再由单证券订单簿撮合；一个 trade 是撮合事实，买卖双方分别更新订单并产生执行回报。撤单请求只有从订单簿移除剩余量后才确认。Stage 5A 在单 JVM 内串行处理并缓存请求结果；跨实例幂等和崩溃恢复还需要可持久的命令 / 事件边界。"

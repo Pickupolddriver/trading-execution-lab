@@ -7,17 +7,11 @@ import dev.tradingexecutionlab.domain.Side;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
-/** A single-symbol, in-memory limit order book with price-time priority. */
+/**
+ * A single-symbol, in-memory limit order book with price-time priority.
+ */
 public class OrderBook {
     private final String symbol;
     private final TreeMap<BigDecimal, LinkedHashMap<String, RestingOrder>> bids =
@@ -35,7 +29,9 @@ public class OrderBook {
         return symbol;
     }
 
-    /** Matches an acknowledged order and rests an unfilled limit remainder. */
+    /**
+     * Matches an acknowledged order and rests an unfilled limit remainder.
+     */
     public MatchResult submit(Order order, Instant executedAt) {
         Objects.requireNonNull(order, "order");
         Objects.requireNonNull(executedAt, "executedAt");
@@ -56,7 +52,7 @@ public class OrderBook {
         }
 
         BigDecimal remaining = initialRemaining;
-        var trades = new java.util.ArrayList<Trade>();
+        var trades = new ArrayList<Trade>();
         TreeMap<BigDecimal, LinkedHashMap<String, RestingOrder>> oppositeBook = oppositeBook(order.getSide());
 
         while (remaining.signum() > 0 && !oppositeBook.isEmpty()) {
@@ -96,7 +92,9 @@ public class OrderBook {
                 remaining, restingQuantity, cancelledQuantity);
     }
 
-    /** Removes an order's remaining displayed quantity; an absent or already filled order returns empty. */
+    /**
+     * Removes an order's remaining displayed quantity; an absent or already filled order returns empty.
+     */
     public Optional<CancelResult> cancel(String orderId) {
         requireText(orderId, "orderId");
         RestingOrder restingOrder = openOrders.get(orderId);
